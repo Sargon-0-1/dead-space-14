@@ -8,6 +8,7 @@ using Content.Server.Emoting.Systems;
 using Content.Server.Speech.EntitySystems;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Mind;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -105,7 +106,7 @@ public sealed partial class NecromorfSystem : SharedInfectionDeadSystem
                 : 1f;
 
             // Gradual healing for living Necromorfs.
-            _damageable.TryChangeDamage(uid, comp.PassiveHealing * multiplier, true, false, damage);
+            _damageable.TryChangeDamage(uid, comp.PassiveHealing * multiplier, true, false);
         }
     }
 

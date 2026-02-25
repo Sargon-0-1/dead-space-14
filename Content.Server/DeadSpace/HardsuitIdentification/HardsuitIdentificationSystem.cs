@@ -16,6 +16,7 @@ using Content.Shared.Interaction.Components;
 using Content.Server.Speech.EntitySystems;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Part;
+using Content.Shared.Chat;
 using Content.Shared.Emag.Systems;
 using Robust.Shared.Audio.Systems;
 using Content.Shared.Speech.Components;

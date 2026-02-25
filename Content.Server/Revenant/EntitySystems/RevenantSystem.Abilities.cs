@@ -41,6 +41,7 @@ using Robust.Shared.Containers;
 
 using Content.Shared.DeadSpace.Languages.Components;
 using Content.Shared.Beam.Components;
+using Content.Shared.Damage.Components;
 
 namespace Content.Server.Revenant.EntitySystems;
 
@@ -232,7 +233,7 @@ public sealed partial class RevenantSystem
             return;
         DamageSpecifier dspec = new();
         dspec.DamageDict.Add("Cold", damage.Value);
-        _damage.TryChangeDamage(args.Args.Target, dspec, true, origin: uid);
+        _damage.ChangeDamage(args.Args.Target.Value, dspec, true, origin: uid);
 
         args.Handled = true;
     }

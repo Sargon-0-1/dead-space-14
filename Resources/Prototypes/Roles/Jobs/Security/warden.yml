@@ -25,6 +25,8 @@
   - External
   - Detective
   - Cryogenics
+  - GenpopEnter
+  - GenpopLeave
   #start-backmen: currency
   minBankBalance: 150
   maxBankBalance: 250

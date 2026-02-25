@@ -12,7 +12,8 @@
       effects:
       - !type:CauseInfectionDead
         conditions:
-        - !type:ReagentThreshold
+        - !type:ReagentCondition
+          reagent: InfectionDeadSpace
           min: 0.5
       - !type:PopupMessage
         type: Local

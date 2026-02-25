@@ -67,22 +67,22 @@
         emote: Yawn
         showInChat: true
         probability: 0.1
-      - !type:MovespeedModifier
+      - !type:MovementSpeedModifier
         walkSpeedModifier: 0.65
         sprintSpeedModifier: 0.65
       - !type:ModifyStatusEffect
         effectProto: StatusEffectDrowsiness
         time: 4
-        type: Add
-# DS-14-start
+        type: Update
+        # DS14-start
         conditions:
-        - !type:OrganType
-          type: SuperSoldier
-          shouldHave: false
-# DS-14-end
+        - !type:MetabolizerTypeCondition
+          type: [ SuperSoldier ]
+          inverted: true
+        # DS14-end
       - !type:HealthChange
         conditions:
-        - !type:ReagentThreshold
+        - !type:ReagentCondition
           reagent: ChloralHydrate
           min: 20
         damage:
@@ -104,9 +104,10 @@
           damage:
             types:
               Poison: 2
-        - !type:ChemVomit
+        - !type:Vomit
           conditions:
-          - !type:ReagentThreshold
+          - !type:ReagentCondition
+            reagent: GastroToxin
             min: 2
           probability: 0.2
 
@@ -150,7 +151,7 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaleByQuantity: true
+        scaling: true
         ignoreResistances: false
         damage:
           types:
@@ -168,9 +169,9 @@
             Caustic: 11.0
 # DS14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
-          shouldHave: false
+          inverted: true
 # DS14-end
       - !type:PopupMessage
         type: Local
@@ -179,24 +180,24 @@
         probability: 0.33
 # DS14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
-          shouldHave: false
+          inverted: true
 # DS14-end
       - !type:Emote
         emote: Scream
         probability: 0.3
 # DS14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
-          shouldHave: false
+          inverted: true
     Drink:
       effects:
       - !type:ModifyBloodLevel
         amount: 7
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
 # DS14-end
 
@@ -214,7 +215,7 @@
       - !type:SatiateThirst
         factor: -1.5
       - !type:HealthChange
-        scaleByQuantity: true
+        scaling: true
         ignoreResistances: true
         damage:
           types:
@@ -222,13 +223,13 @@
             Caustic: 1
 # DS14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
-          shouldHave: false
+          inverted: true
       - !type:ModifyBloodLevel
         amount: 3
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
 # DS14-end
 
@@ -248,7 +249,7 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaleByQuantity: true
+        scaling: true
         ignoreResistances: false
         damage:
           types:
@@ -266,9 +267,9 @@
             Caustic: 8
 # DS14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
-          shouldHave: false
+          inverted: true
 # DS14-end
       - !type:PopupMessage
         type: Local
@@ -277,24 +278,24 @@
         probability: 0.33
 # DS14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
-          shouldHave: false
+          inverted: true
 # DS14-end
       - !type:Emote
         emote: Scream
         probability: 0.25
 # DS14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
-          shouldHave: false
+          inverted: true
     Drink:
       effects:
       - !type:ModifyBloodLevel
         amount: 9
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
 # DS14-end
 
@@ -323,7 +324,7 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaleByQuantity: true
+        scaling: true
         ignoreResistances: false
         damage:
           types:
@@ -341,9 +342,9 @@
             Caustic: 5
 # DS14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
-          shouldHave: false
+          inverted: true
 # DS14-end
       - !type:PopupMessage
         type: Local
@@ -352,24 +353,24 @@
         probability: 0.33
 # DS14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
-          shouldHave: false
+          inverted: true
 # DS14-end
       - !type:Emote
         emote: Scream
         probability: 0.2
 # DS14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
-          shouldHave: false
+          inverted: true
     Drink:
       effects:
       - !type:ModifyBloodLevel
         amount: 5
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
 # DS14-end
 
@@ -470,7 +471,8 @@
       # todo: cough, sneeze
       - !type:HealthChange
         conditions:
-        - !type:ReagentThreshold
+        - !type:ReagentCondition
+          reagent: Histamine
           min: 45
         damage:
           groups:
@@ -484,7 +486,8 @@
         probability: 0.1
       - !type:PopupMessage
         conditions:
-        - !type:ReagentThreshold
+        - !type:ReagentCondition
+          reagent: Histamine
           min: 45
         type: Local
         visualType: Medium
@@ -506,16 +509,16 @@
       effects:
       - !type:HealthChange
         conditions:
-        - !type:OrganType
-          type: Animal # Applying damage to the mobs with lower metabolism capabilities
+        - !type:MetabolizerTypeCondition
+          type: [Animal] # Applying damage to the mobs with lower metabolism capabilities
         damage:
           types:
             Poison: 0.4
-      - !type:ChemVomit
+      - !type:Vomit
         probability: 0.04 #Scaled for time, not metabolismrate.
         conditions:
-          - !type:OrganType
-            type: Animal
+          - !type:MetabolizerTypeCondition
+            type: [Animal]
 
 - type: reagent
   id: Amatoxin
@@ -565,7 +568,8 @@
       effects:
         - !type:CauseZombieInfection
           conditions:
-            - !type:ReagentThreshold
+            - !type:ReagentCondition
+              reagent: Romerol
               min: 5
 
 - type: reagent
@@ -581,67 +585,43 @@
       effects:
       - !type:PopupMessage
         conditions:
-          - !type:OrganType
-            type: Animal
-            shouldHave: false
-          - !type:OrganType
-            type: Vox
-            shouldHave: false
-# DS14-start
-          - !type:OrganType
-            type: Xenomorph
-            shouldHave: false
-# DS14-end
+        - !type:MetabolizerTypeCondition
+          type: [ Animal, Vox, Xenomorph ] # DS14: added Xenomorph
+          inverted: true
         type: Local
         visualType: MediumCaution
         messages: [ "generic-reagent-effect-sick" ]
         probability: 0.5
-      - !type:ChemVomit
+      - !type:Vomit
         probability: 0.1
         conditions:
-          - !type:OrganType
-            type: Animal
-            shouldHave: false
-          - !type:OrganType
-            type: Vox
-            shouldHave: false
-# DS14-start
-          - !type:OrganType
-            type: Xenomorph
-            shouldHave: false
-# DS14-end
+        - !type:MetabolizerTypeCondition
+          type: [ Animal, Vox, Xenomorph ] # DS14: added Xenomorph
+          inverted: true
       - !type:HealthChange
         conditions:
-        - !type:OrganType
-          type: Animal
-          shouldHave: false
-        - !type:OrganType
-          type: Vox
-          shouldHave: false
-# DS14-start
-        - !type:OrganType
-          type: Xenomorph
-          shouldHave: false
-# DS14-end
+        - !type:MetabolizerTypeCondition
+          type: [ Animal, Vox, Xenomorph ] # DS14: added Xenomorph
+          inverted: true
         damage:
           types:
             Poison: 1
       - !type:AdjustReagent
         conditions:
-        - !type:OrganType
-          type: Animal
+        - !type:MetabolizerTypeCondition
+          type: [ Animal ]
         reagent: Protein
         amount: 0.5
       - !type:AdjustReagent
         conditions:
-        - !type:OrganType
-          type: Vox
+        - !type:MetabolizerTypeCondition
+          type: [ Vox ]
         reagent: Protein
         amount: 0.25
 # DS14-start
       - !type:AdjustReagent
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: Xenomorph
         reagent: Protein
         amount: 0.3
@@ -661,10 +641,11 @@
       effects:
       - !type:HealthChange
         conditions:
-        - !type:ReagentThreshold
+        - !type:ReagentCondition
+          reagent: Allicin
           min: 1
-        - !type:OrganType
-          type: Animal
+        - !type:MetabolizerTypeCondition
+          type: [Animal]
         damage:
           types:
             Poison: 0.06
@@ -687,13 +668,12 @@
       - !type:GenericStatusEffect
         key: Pacified
         component: Pacified
-        type: Add
         time: 4
 # DS-14-start
         conditions:
-        - !type:OrganType
+        - !type:MetabolizerTypeCondition
           type: SuperSoldier
-          shouldHave: false
+          inverted: true
 # DS-14-end
 
 - type: reagent
@@ -716,10 +696,11 @@
         probability: 0.2
       - !type:HealthChange
         conditions:
-        - !type:ReagentThreshold
+        - !type:ReagentCondition
+          reagent: Honk
           min: 1
-        - !type:OrganType
-          type: Animal
+        - !type:MetabolizerTypeCondition
+          type: [ Animal ]
         damage:
           types:
             Poison: 0.06
@@ -773,9 +754,10 @@
       effects:
       - !type:Jitter
         conditions:
-        - !type:ReagentThreshold
+        - !type:ReagentCondition
+          reagent: Vestine
           min: 5
-      - !type:MovespeedModifier
+      - !type:MovementSpeedModifier
         walkSpeedModifier: 0.8
         sprintSpeedModifier: 0.8
       - !type:HealthChange
@@ -813,7 +795,7 @@
       effects:
       - !type:HealthChange
         conditions:
-        - !type:Hunger
+        - !type:HungerCondition
           max: 50
         damage:
           types:
@@ -837,30 +819,30 @@
       effects:
       - !type:HealthChange
         conditions:
-        - !type:OrganType
-          type: Arachnid
-          shouldHave: false
+        - !type:MetabolizerTypeCondition
+          type: [Arachnid]
+          inverted: true
         damage:
           types:
             Poison: 1.6
-      - !type:MovespeedModifier
+      - !type:MovementSpeedModifier
         conditions:
-        - !type:ReagentThreshold
+        - !type:ReagentCondition
           reagent: Mechanotoxin
           min: 2
-        - !type:OrganType
-          type: Arachnid
-          shouldHave: false
+        - !type:MetabolizerTypeCondition
+          type: [Arachnid]
+          inverted: true
         walkSpeedModifier: 0.8
         sprintSpeedModifier: 0.8
-      - !type:MovespeedModifier
+      - !type:MovementSpeedModifier
         conditions:
-        - !type:ReagentThreshold
+        - !type:ReagentCondition
           reagent: Mechanotoxin
           min: 4
-        - !type:OrganType
-          type: Arachnid
-          shouldHave: false
+        - !type:MetabolizerTypeCondition
+          type: [Arachnid]
+          inverted: true
         walkSpeedModifier: 0.4
         sprintSpeedModifier: 0.4
 
@@ -877,5 +859,5 @@
       - !type:SatiateHunger
         factor: 1
         conditions:
-        - !type:OrganType
-          type: Vox
+        - !type:MetabolizerTypeCondition
+          type: [Vox]

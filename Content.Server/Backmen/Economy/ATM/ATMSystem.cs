@@ -257,7 +257,7 @@ public sealed class ATMSystem : SharedATMSystem
         {
             var cashId = proto.Cash[value];
             var amountToSpawn = (int) MathF.Floor((float) (amountRemaining / value));
-            var ents = _stack.SpawnMultiple(cashId, amountToSpawn, coordinates);
+            var ents = _stack.SpawnMultipleAtPosition(cashId, amountToSpawn, coordinates);
             _hands.PickupOrDrop(buyer, ents.First());
             amountRemaining -= value * amountToSpawn;
         }

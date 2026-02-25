@@ -245,9 +245,14 @@
       rootTask:
         task: DragonCarpCompound
     #DS14-start
-    - type: GhostRoleNotifys 
+    - type: GhostRoleNotifys
       groupPrototype: CarpsGroup
     #DS14-end
+    - type: Flammable
+      damage:
+       types: {}
+    - type: Temperature
+      heatDamageThreshold: 1200
 
 - type: entity
   id: MobCarpDungeon

@@ -87,7 +87,7 @@
         Base: running
       Dead:
         Base: dead
-  - type: Food
+  - type: Edible
   - type: Extractable
     grindableSolutionName: food
   - type: SolutionContainerManager

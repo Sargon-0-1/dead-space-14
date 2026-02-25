@@ -193,7 +193,7 @@
     - reagents: [Water, SpaceCleaner]
       methods: [Touch]
       effects:
-      - !type:WashCreamPieReaction
+      - !type:WashCreamPie
   # DS14-Languages-start
   - type: Language
     selectedLanguage: GeneralLanguage

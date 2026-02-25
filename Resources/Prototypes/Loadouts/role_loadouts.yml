@@ -9,6 +9,7 @@
   - CaptainOuterClothing
   - Survival
   - Trinkets
+  - CaptainJobTrinkets
   - GroupSpeciesBreathTool
   - CaptainUnderwear # DS14-Underwear
 
@@ -25,6 +26,7 @@
   # - Glasses
   - Survival
   - Trinkets
+  - HoPJobTrinkets
   - GroupSpeciesBreathTool
   - HoPUnderwear # DS14-Underwear
 
@@ -61,6 +63,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - PassengerJobTrinkets
   - GroupSpeciesBreathTool
   - DefaultWhiteUnderwear # DS14-Underwear
 
@@ -72,10 +75,10 @@
   - BartenderJumpsuit
   - CommonBackpack
   - BartenderOuterClothing
-  - BartenderGoldenShaker
   - Glasses
   - Survival
   - Trinkets
+  - BartenderJobTrinkets
   - GroupSpeciesBreathTool
   - BartenderUnderwear # DS14-Underwear
 
@@ -88,6 +91,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - ServiceWorkerJobTrinkets
   - GroupSpeciesBreathTool
   - ServiceUnderwear # DS14-Underwear
 
@@ -103,6 +107,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - ChefJobTrinkets
   - GroupSpeciesBreathTool
   - ChefUnderwear # DS14-Underwear
   - ChefHand # DS14
@@ -117,6 +122,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - LibrarianJobTrinkets
   - GroupSpeciesBreathTool
   - LibrarianUnderwear # DS14-Underwear
 
@@ -130,6 +136,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - LawyerJobTrinkets
   - GroupSpeciesBreathTool
   - LawyerUnderwear # DS14-Underwear
 
@@ -147,6 +154,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - ChaplainJobTrinkets
   - GroupSpeciesBreathTool
   - ChaplainUnderwear # DS14-Underwear
 
@@ -163,6 +171,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - JanitorJobTrinkets
   - JanitorPlunger
   - GroupSpeciesBreathTool
   - JanitorUnderwear # DS14-Underwear
@@ -178,6 +187,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - BotanistJobTrinkets
   - GroupSpeciesBreathTool
   - BotanistUnderwear # DS14-Underwear
 
@@ -195,6 +205,7 @@
   - SurvivalClown
   - Trinkets
   - ClownUnderwear # DS14-Underwear
+  - ClownJobTrinkets
 
 - type: roleLoadout
   id: JobMime
@@ -212,6 +223,7 @@
   - SurvivalMime
   - Trinkets
   - MimeUnderwear # DS14-Underwear
+  - MimeJobTrinkets
 
 - type: roleLoadout
   id: JobMusician
@@ -224,6 +236,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - MusicianJobTrinkets
   - Instruments
   - GroupSpeciesBreathTool
   - MusicianUnderwear # DS14-Underwear
@@ -242,6 +255,7 @@
   # - Glasses
   - Survival
   - Trinkets
+  - QuartermasterJobTrinkets
   - GroupSpeciesBreathTool
   - QuartermasterUnderwear # DS14-Underwear
 
@@ -258,6 +272,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - CargoTechnicianJobTrinkets
   - GroupSpeciesBreathTool
   - CargoTechnicianUnderwear # DS14-Underwear
 
@@ -272,6 +287,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - SalvageSpecialistJobTrinkets
   - GroupSpeciesBreathTool
   - SalvageSpecialistUnderwear # DS14-Underwear
 
@@ -288,6 +304,7 @@
   - ChiefEngineerShoes
   - SurvivalExtended
   - Trinkets
+  - ChiefEngineerJobTrinkets
   - GroupSpeciesBreathTool
   - ChiefEngineerUnderwear # DS14-Underwear
 
@@ -300,6 +317,7 @@
   - StationEngineerBelt # DS14
   - SurvivalExtended
   - Trinkets
+  - TechnicalAssistantJobTrinkets
   - GroupSpeciesBreathTool
   - TechnicalAssistantUnderwear # DS14-Underwear
 
@@ -316,6 +334,7 @@
 #  - StationEngineerID # DS14-disabled
   - SurvivalExtended
   - Trinkets
+  - StationEngineerJobTrinkets
   - GroupSpeciesBreathTool
   - StationEngineerUnderwear # DS14-Underwear
 
@@ -330,6 +349,7 @@
   - AtmosphericTechnicianShoes
   - SurvivalExtended
   - Trinkets
+  - AtmosphericTechnicianJobTrinkets
   - GroupSpeciesBreathTool
   - AtmosphericTechnicianUnderwear # DS14-Underwear
 
@@ -348,6 +368,7 @@
   # - Glasses
   - Survival
   - Trinkets
+  - ResearchDirectorJobTrinkets
   - GroupSpeciesBreathTool
   - ResearchDirectorUnderwear # DS14-Underwear
 
@@ -366,6 +387,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - ScientistJobTrinkets
   - GroupSpeciesBreathTool
   - ScientistUnderwear # DS14-Underwear
 
@@ -378,6 +400,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - ResearchAssistantJobTrinkets
   - GroupSpeciesBreathTool
   - ResearchAssistantUnderwear # DS14-Underwear
 
@@ -396,6 +419,7 @@
   - HeadofSecurityShoes
   - SurvivalSecurity
   - Trinkets
+  - HeadofSecurityJobTrinkets
   - SecurityStar
   - GroupSpeciesBreathToolSecurity
   - HeadofSecuritySocks # DS14-Underwear
@@ -414,6 +438,7 @@
   - SecurityShoes
   - SurvivalSecurity
   - Trinkets
+  - WardenJobTrinkets
   - SecurityStar
   - GroupSpeciesBreathToolSecurity
   - WardenSocks # DS14-Underwear
@@ -434,6 +459,7 @@
   - SecurityBelt
   - SurvivalSecurity
   - Trinkets
+  - SecurityJobTrinkets
   - SecurityStar
   - GroupSpeciesBreathToolSecurity
   - SecuritySocks # DS14-Underwear
@@ -452,6 +478,7 @@
   - DetectiveShoes
   - SurvivalSecurity
   - Trinkets
+  - DetectiveJobTrinkets
   - SecurityStar
   - GroupSpeciesBreathToolSecurity
   - DetectiveSocks # DS14-Underwear
@@ -466,6 +493,7 @@
   - SecurityBackpack
   - SurvivalSecurity
   - Trinkets
+  - SecurityCadetJobTrinkets
   - GroupSpeciesBreathToolSecurity
   - SecurityCadetSocks # DS14-Underwear
   - SecurityCadetUnderwear # DS14-Underwear
@@ -486,6 +514,7 @@
   # - MedicalEyewear
   - SurvivalMedical
   - Trinkets
+  - ChiefMedicalOfficerJobTrinkets
   - GroupSpeciesBreathToolMedical
   - ChiefMedicalOfficerUnderwear # DS14-Underwear
 
@@ -505,6 +534,7 @@
   - MedicalEyewear
   - SurvivalMedical
   - Trinkets
+  - MedicalDoctorJobTrinkets
   - GroupSpeciesBreathToolMedical
   - MedicalDoctorUnderwear # DS14-Underwear
 
@@ -517,6 +547,7 @@
   - Glasses
   - SurvivalMedical
   - Trinkets
+  - MedicalInternJobTrinkets
   - GroupSpeciesBreathToolMedical
   - MedicalInternUnderwear # DS14-Underwear
 
@@ -551,6 +582,7 @@
   - ChemistSocks # DS14
   - SurvivalMedical
   - Trinkets
+  - ChemistJobTrinkets
   - GroupSpeciesBreathToolMedical
   - ChemistUnderwear # DS14-Underwear
 
@@ -569,6 +601,7 @@
   - MedicalEyewear
   - SurvivalMedical
   - Trinkets
+  - ParamedicJobTrinkets
   - GroupSpeciesBreathToolMedical
   - ParamedicUnderwear # DS14-Underwear
 
@@ -581,6 +614,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - ZookeeperJobTrinkets
   - GroupSpeciesBreathTool
   - ZookeeperUnderwear # DS14-Underwear
 
@@ -593,6 +627,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - ReporterJobTrinkets
   - GroupSpeciesBreathTool
   - ReporterUnderwear # DS14-Underwear
 
@@ -606,6 +641,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - PsychologistJobTrinkets
   - GroupSpeciesBreathTool
   - PsychologistUnderwear # DS14-Underwear
 
@@ -619,6 +655,7 @@
   - Glasses
   - Survival
   - Trinkets
+  - BoxerJobTrinkets
   - GroupSpeciesBreathTool
   - BoxerUnderwear # DS14-Underwear
 

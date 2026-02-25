@@ -11,6 +11,7 @@ using Content.Shared.DeadSpace.Autopsy;
 using Content.Server.Buckle.Systems;
 using Content.Server.Popups;
 using Content.Shared.Buckle.Components;
+using Content.Shared.Damage.Components;
 using Content.Shared.Mobs;
 
 namespace Content.Server.DeadSpace.Autopsy;

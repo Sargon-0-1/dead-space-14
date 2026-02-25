@@ -52,7 +52,7 @@ public sealed partial class BlobChemSwapMenu : DefaultWindow
                 MinSize = new Vector2(64, 64),
                 HorizontalExpand = true,
                 Group = group,
-                StyleClasses = {StyleBase.ButtonSquare},
+                StyleClasses = {StyleClass.ButtonSquare},
                 ToggleMode = true,
                 Pressed = _selectedId == blobChem.Key,
                 ToolTip = Loc.GetString($"blob-chem-{blobChem.Key.ToString().ToLower()}-info"),

@@ -66,15 +66,7 @@ namespace Content.Server.Research.Systems
         /// <returns></returns>
         public string[] GetServerNames(EntityUid client)
         {
-            var allServers = GetServers(client).ToArray();
-            var list = new string[allServers.Length];
-
-            for (var i = 0; i < allServers.Length; i++)
-            {
-                list[i] = allServers[i].Comp.ServerName;
-            }
-
-            return list;
+            return GetServers(client).Select(x => x.Comp.ServerName).ToArray();
         }
 
         /// <summary>
@@ -83,15 +75,7 @@ namespace Content.Server.Research.Systems
         /// <returns></returns>
         public int[] GetServerIds(EntityUid client)
         {
-            var allServers = GetServers(client).ToArray();
-            var list = new int[allServers.Length];
-
-            for (var i = 0; i < allServers.Length; i++)
-            {
-                list[i] = allServers[i].Comp.Id;
-            }
-
-            return list;
+            return GetServers(client).Select(x => x.Comp.Id).ToArray();
         }
 
         // DS14-start

@@ -71,7 +71,7 @@
   - MeteorSwarmScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
-  - SubGamemodesRule # DS14
+  - SubGamemodesRuleNoWizard # DS14
 
 - type: gamePreset
   id: Greenshift
@@ -129,7 +129,7 @@
   - MeteorSwarmScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
-  - SubGamemodesRule # DS14
+  - SubGamemodesRuleNoWizard # DS14
 
 - type: gamePreset
   id: SecretGreenshift #For Admin Use: Runs Greenshift but shows "Secret" in lobby.
@@ -170,7 +170,7 @@
   - WageScheduler # backmen: currency
   - DummyNonAntagChance
   - Traitor
-  - SubGamemodesRule
+  - SubGamemodesRuleNoWizard
   - BasicStationEventScheduler
   - MeteorSwarmScheduler
   - SpaceTrafficControlEventScheduler
@@ -277,4 +277,4 @@
   - KesslerSyndromeScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
-  - SubGamemodesRule # DS14
+  - SubGamemodesRuleNoWizard # DS14

@@ -55,6 +55,7 @@ using Robust.Shared.Prototypes;
 using Content.Shared.DeadSpace.Virus.Components;
 using Content.Server.DeadSpace.Virus.Systems;
 using Content.Server.DeadSpace.Languages;
+using Content.Shared.Temperature.Components;
 
 namespace Content.Server.DeadSpace.Necromorphs.InfectionDead;
 
@@ -277,7 +278,7 @@ public sealed partial class NecromorfSystem
             tempComp.ColdDamage.ClampMax(0);
 
         if (TryComp<DamageableComponent>(target, out var damageablecomp))
-            _damageable.SetAllDamage(target, damageablecomp, 0);
+            _damageable.SetAllDamage(target, 0);
         _mobState.ChangeMobState(target, MobState.Alive);
 
         _faction.ClearFactions(target, dirty: false);

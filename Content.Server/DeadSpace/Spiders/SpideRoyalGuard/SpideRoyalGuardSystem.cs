@@ -4,6 +4,7 @@ using Content.Server.DeadSpace.Spiders.SpideRoyalGuard.Components;
 using Robust.Shared.Timing;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Alert;
 using Content.Shared.Mobs.Systems;
 
