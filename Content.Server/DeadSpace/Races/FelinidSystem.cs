@@ -162,9 +162,9 @@ public sealed class FelinidSystem : EntitySystem
         var hairballComp = Comp<HairballComponent>(hairball);
 
         if (TryComp<BloodstreamComponent>(uid, out var bloodStream) &&
-            _solutionContainer.ResolveSolution(uid, bloodStream.ChemicalSolutionName, ref bloodStream.ChemicalSolution))
+            _solutionContainer.ResolveSolution(uid, bloodStream.BloodSolutionName, ref bloodStream.BloodSolution))
         {
-            var vomitChemstreamAmount = _solutionContainer.SplitSolution(bloodStream.ChemicalSolution.Value, 20);
+            var vomitChemstreamAmount = _solutionContainer.SplitSolution(bloodStream.BloodSolution.Value, 20);
 
             if (_solutionContainer.TryGetSolution(hairball, hairballComp.SolutionName, out var hairballSolution))
             {

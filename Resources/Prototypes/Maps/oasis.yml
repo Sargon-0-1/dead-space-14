@@ -45,16 +45,6 @@
             SeniorResearcher: [ 1, 1 ]
             Scientist: [ 5, 5 ]
             ResearchAssistant: [ 4, 4 ]
-            Quartermaster: [ 1, 1 ]
-            #service
-            Bartender: [ 2, 2 ]
-            Botanist: [ 2, 3 ]
-            Chef: [ 2, 2 ]
-            Janitor: [ 3, 3 ]
-            Chaplain: [ 1, 1 ]
-            Librarian: [ 1, 1 ]
-            ServiceWorker: [ 2, 2 ]
-            Reporter: [ 1, 1 ]
             # eng
             ChiefEngineer: [ 1, 1 ]
             SeniorEngineer: [ 1, 1 ]

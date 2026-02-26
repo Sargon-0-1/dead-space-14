@@ -25,12 +25,12 @@ public sealed partial class CauseInfectionDeadEntityEffectSystem : EntityEffectS
 
         var component = new InfectionDeadComponent(args.Effect.StrainData);
 
-        // Try to find InfectionDeadStrainData from the entity's bloodstream chemical solution,
+        // Try to find InfectionDeadStrainData from the entity's bloodstream solution,
         // as it may carry strain-specific data as ReagentData.
         if (TryComp<BloodstreamComponent>(entity, out var bloodstream)
-            && bloodstream.ChemicalSolution is { } chemSolutionEntity)
+            && bloodstream.BloodSolution is { } bloodSolutionEntity)
         {
-            foreach (var reagent in chemSolutionEntity.Comp.Solution.Contents)
+            foreach (var reagent in bloodSolutionEntity.Comp.Solution.Contents)
             {
                 var dataList = reagent.Reagent.Data;
                 if (dataList == null)

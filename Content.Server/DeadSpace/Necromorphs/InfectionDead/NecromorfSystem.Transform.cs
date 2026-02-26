@@ -189,8 +189,8 @@ public sealed partial class NecromorfSystem
             necromorfComp.BeforeNecroficationSkinColor = huApComp.SkinColor;
             necromorfComp.BeforeNecroficationEyeColor = huApComp.EyeColor;
             necromorfComp.BeforeNecroficationCustomBaseLayers = new(huApComp.CustomBaseLayers);
-            if (TryComp<BloodstreamComponent>(target, out var stream))
-                necromorfComp.BeforeNecroficationBloodReagent = stream.BloodReagent;
+            if (TryComp<BloodstreamComponent>(target, out var stream) && stream.BloodReferenceSolution is { } bloodReagents)
+                necromorfComp.BeforeNecroficationBloodReagents = bloodReagents.Clone();
 
             _humanoidAppearance.SetSkinColor(target, necromorfComp.StrainData.SkinColor, verify: false, humanoid: huApComp);
 
@@ -262,7 +262,7 @@ public sealed partial class NecromorfSystem
 
         _bloodstream.SetBloodLossThreshold(target, 0f);
 
-        _bloodstream.ChangeBloodReagent(target, necromorfComp.NewBloodReagent);
+        _bloodstream.ChangeBloodReagents(target, necromorfComp.NewBloodReagents);
 
         _popup.PopupEntity(Loc.GetString("necro-transform", ("target", target)), target, PopupType.LargeCaution);
 
@@ -274,8 +274,8 @@ public sealed partial class NecromorfSystem
             _movement.RefreshMovementSpeedModifiers(target);
         }
 
-        if (TryComp<TemperatureComponent>(target, out var tempComp))
-            tempComp.ColdDamage.ClampMax(0);
+        if (TryComp<TemperatureDamageComponent>(target, out var tempDamageComp))
+            tempDamageComp.ColdDamage.ClampMax(0);
 
         if (TryComp<DamageableComponent>(target, out var damageablecomp))
             _damageable.SetAllDamage(target, 0);

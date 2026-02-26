@@ -34,7 +34,7 @@ public sealed class EmoteOnDamageSystem : EntitySystem
             return;
 
         // DS14-start
-        if (HasComp<MutedComponent>(uid) || HasComp<PainNumbnessComponent>(uid))
+        if (HasComp<MutedComponent>(uid) || HasComp<PainNumbnessStatusEffectComponent>(uid))
             return;
         // DS14-end
 
