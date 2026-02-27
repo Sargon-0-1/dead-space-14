@@ -44,7 +44,6 @@
       - Overlay
       - UndergarmentTop
       - UndergarmentBottom
-      - Special
 
 - type: entity
   parent: OrganBase
