@@ -215,7 +215,7 @@ namespace Content.Server.Database
             {
                 return document.Deserialize<TValue>();
             }
-            catch (JsonException)
+            catch (JsonException exception)
             {
                 return null;
             }
