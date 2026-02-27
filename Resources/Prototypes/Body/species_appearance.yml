@@ -29,9 +29,6 @@
     - map: ["enum.HumanoidVisualLayers.LHand"]
     - map: ["enum.HumanoidVisualLayers.RHand"]
 
-    # Stuff that goes over the body but below equipment
-    - map: ["enum.HumanoidVisualLayers.Overlay"]
-
     # More equipment
     - map: [ "gloves" ]
     - map: [ "shoes" ]
@@ -78,19 +75,10 @@
   save: false
   components:
   - type: Body
-  - type: VisualBody
   - type: Hands
   - type: ComplexInteraction
   - type: ContainerContainer
   - type: Appearance
-  - type: HideableHumanoidLayers
-    hideLayersOnEquip:
-    - Snout
-    - SnoutCover
-    - HeadTop
-    - HeadSide
-    - FacialHair
-    - Hair
   - type: UserInterface
     interfaces:
       enum.HumanoidMarkingModifierKey.Key:

@@ -249,7 +249,7 @@ public sealed class ChangelingDevourSystem : EntitySystem
 
         if (_mobState.IsDead(target.Value)
             && TryComp<BodyComponent>(target, out var body)
-            && HasComp<HumanoidProfileComponent>(target)
+            && HasComp<HumanoidAppearanceComponent>(target)
             && TryComp<ChangelingIdentityComponent>(args.User, out var identityStorage))
         {
             _adminLogger.Add(LogType.Action, LogImpact.Medium, $"{ToPrettyString(ent.Owner):player}  successfully devoured {ToPrettyString(args.Target):player}'s identity");
