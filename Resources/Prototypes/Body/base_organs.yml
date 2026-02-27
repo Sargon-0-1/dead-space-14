@@ -60,8 +60,6 @@
     data:
       state: head
   - type: VisualOrganMarkings
-    hideableLayers:
-    - enum.HumanoidVisualLayers.Hair
     markingData:
       layers:
       - Head
