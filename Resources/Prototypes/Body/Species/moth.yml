@@ -233,7 +233,7 @@
     sprite: Mobs/Species/Moth/parts.rsi
 
 - type: entity
-  parent: [ OrganBaseTorsoSexed, OrganBaseTorso, OrganMothExternal ]
+  parent: [ OrganBaseTorso, OrganMothExternal ]
   id: OrganMothTorso
 
 - type: entity
