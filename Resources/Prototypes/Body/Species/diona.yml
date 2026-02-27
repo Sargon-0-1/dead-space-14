@@ -278,7 +278,14 @@
   components:
   - type: Metabolizer
     maxReagents: 6
-    stages: [ Digestion, Bloodstream, Metabolites ]
+    removeEmpty: true
+    groups:
+    - id: Food
+    - id: Drink
+    - id: Medicine
+    - id: Poison
+    - id: Narcotic
+    - id: Alcohol
 
 - type: entity
   parent: OrganDionaBrain
