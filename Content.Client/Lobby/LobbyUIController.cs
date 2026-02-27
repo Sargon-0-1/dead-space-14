@@ -182,12 +182,13 @@ public sealed class LobbyUIController : UIController, IOnStateEntered<LobbyState
 
         if (character is not HumanoidCharacterProfile humanoid)
         {
-            PreviewPanel.ProfilePreviewSpriteView.ClearPreview();
+            PreviewPanel.SetSprite(EntityUid.Invalid);
             PreviewPanel.SetSummaryText(string.Empty);
             return;
         }
 
-        PreviewPanel.ProfilePreviewSpriteView.LoadPreview(humanoid);
+        var dummy = LoadProfileEntity(humanoid, null, true);
+        PreviewPanel.SetSprite(dummy);
         PreviewPanel.SetSummaryText(humanoid.Summary);
     }
 
