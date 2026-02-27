@@ -140,7 +140,7 @@
   - type: Devourer
     foodPreferenceWhitelist:
       components:
-      - HumanoidProfile
+      - HumanoidAppearance
     stomachStorageWhitelist:
       components:
       - MobState

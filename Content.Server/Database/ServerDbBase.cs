@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Administration.Logs;
 using Content.Shared.Administration.Logs;
-using Content.Shared.Body;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.Database;
 using Content.Shared.Humanoid;
@@ -19,11 +18,9 @@ using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Roles;
 using Content.Shared.Traits;
 using Microsoft.EntityFrameworkCore;
-using Robust.Shared.Asynchronous;
 using Robust.Shared.Enums;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Utility;
 
 namespace Content.Server.Database
@@ -32,14 +29,10 @@ namespace Content.Server.Database
     {
         private readonly ISawmill _opsLog;
         public event Action<DatabaseNotification>? OnNotificationReceived;
-        private readonly ITaskManager _task;
-        private readonly ISerializationManager _serialization;
 
         /// <param name="opsLog">Sawmill to trace log database operations to.</param>
-        public ServerDbBase(ISawmill opsLog, ITaskManager taskManager, ISerializationManager serialization)
+        public ServerDbBase(ISawmill opsLog)
         {
-            _task = taskManager;
-            _serialization = serialization;
             _opsLog = opsLog;
         }
 
@@ -69,7 +62,7 @@ namespace Content.Server.Database
             var profiles = new Dictionary<int, ICharacterProfile>(maxSlot);
             foreach (var profile in prefs.Profiles)
             {
-                profiles[profile.Slot] = await ConvertProfiles(profile);
+                profiles[profile.Slot] = ConvertProfiles(profile);
             }
 
             var constructionFavorites = new List<ProtoId<ConstructionPrototype>>(prefs.ConstructionFavorites.Count);
@@ -209,21 +202,8 @@ namespace Content.Server.Database
             prefs.SelectedCharacterSlot = newSlot;
         }
 
-        private static TValue? TryDeserialize<TValue>(JsonDocument document) where TValue : class
+        private static HumanoidCharacterProfile ConvertProfiles(Profile profile)
         {
-            try
-            {
-                return document.Deserialize<TValue>();
-            }
-            catch (JsonException exception)
-            {
-                return null;
-            }
-        }
-
-        private async Task<HumanoidCharacterProfile> ConvertProfiles(Profile profile)
-        {
-
             var jobs = profile.Jobs.ToDictionary(j => new ProtoId<JobPrototype>(j.JobName), j => (JobPriority) j.Priority);
             var antags = profile.Antags.Select(a => new ProtoId<AntagPrototype>(a.AntagName));
             var traits = profile.Traits.Select(t => new ProtoId<TraitPrototype>(t.TraitName));
@@ -238,53 +218,20 @@ namespace Content.Server.Database
             if (Enum.TryParse<Gender>(profile.Gender, true, out var genderVal))
                 gender = genderVal;
 
+            // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+            var markingsRaw = profile.Markings?.Deserialize<List<string>>();
 
-            var markings =
-                new Dictionary<ProtoId<OrganCategoryPrototype>, Dictionary<HumanoidVisualLayers, List<Marking>>>();
-
-            if (profile.OrganMarkings?.RootElement is { } element)
+            List<Marking> markings = new();
+            if (markingsRaw != null)
             {
-                var data = element.ToDataNode();
-                markings = _serialization
-                    .Read<Dictionary<ProtoId<OrganCategoryPrototype>, Dictionary<HumanoidVisualLayers, List<Marking>>>>(
-                        data,
-                        notNullableOverride: true);
-            }
-            else if (profile.Markings is { } profileMarkings && TryDeserialize<List<string>>(profileMarkings) is { } markingsRaw)
-            {
-                List<Marking> markingsList = new();
-
                 foreach (var marking in markingsRaw)
                 {
                     var parsed = Marking.ParseFromDbString(marking);
 
                     if (parsed is null) continue;
 
-                    markingsList.Add(parsed);
+                    markings.Add(parsed);
                 }
-
-                if (Marking.ParseFromDbString($"{profile.HairName}@{profile.HairColor}") is { } facialMarking)
-                    markingsList.Add(facialMarking);
-
-                if (Marking.ParseFromDbString($"{profile.HairName}@{profile.HairColor}") is { } hairMarking)
-                    markingsList.Add(hairMarking);
-
-                var completion = new TaskCompletionSource();
-                _task.RunOnMainThread(() =>
-                {
-                    var markingManager = IoCManager.Resolve<MarkingManager>();
-
-                    try
-                    {
-                        markings = markingManager.ConvertMarkings(markingsList, profile.Species);
-                        completion.SetResult();
-                    }
-                    catch (Exception ex)
-                    {
-                        completion.TrySetException(ex);
-                    }
-                });
-                await completion.Task;
             }
 
             var loadouts = new Dictionary<string, RoleLoadout>();
@@ -320,6 +267,10 @@ namespace Content.Server.Database
                 gender,
                 new HumanoidCharacterAppearance
                 (
+                    profile.HairName,
+                    Color.FromHex(profile.HairColor),
+                    profile.FacialHairName,
+                    Color.FromHex(profile.FacialHairColor),
                     Color.FromHex(profile.EyeColor),
                     Color.FromHex(profile.SkinColor),
                     markings
@@ -333,11 +284,16 @@ namespace Content.Server.Database
             );
         }
 
-        private Profile ConvertProfiles(HumanoidCharacterProfile humanoid, int slot, Profile? profile = null)
+        private static Profile ConvertProfiles(HumanoidCharacterProfile humanoid, int slot, Profile? profile = null)
         {
             profile ??= new Profile();
             var appearance = (HumanoidCharacterAppearance) humanoid.CharacterAppearance;
-            var dataNode = _serialization.WriteValue(appearance.Markings, alwaysWrite: true, notNullableOverride: true);
+            List<string> markingStrings = new();
+            foreach (var marking in appearance.Markings)
+            {
+                markingStrings.Add(marking.ToString());
+            }
+            var markings = JsonSerializer.SerializeToDocument(markingStrings);
 
             profile.CharacterName = humanoid.Name;
             profile.FlavorText = humanoid.FlavorText;
@@ -345,28 +301,14 @@ namespace Content.Server.Database
             profile.Age = humanoid.Age;
             profile.Sex = humanoid.Sex.ToString();
             profile.Gender = humanoid.Gender.ToString();
+            profile.HairName = appearance.HairStyleId;
+            profile.HairColor = appearance.HairColor.ToHex();
+            profile.FacialHairName = appearance.FacialHairStyleId;
+            profile.FacialHairColor = appearance.FacialHairColor.ToHex();
             profile.EyeColor = appearance.EyeColor.ToHex();
             profile.SkinColor = appearance.SkinColor.ToHex();
             profile.SpawnPriority = (int) humanoid.SpawnPriority;
-            profile.OrganMarkings = JsonSerializer.SerializeToDocument(dataNode.ToJsonNode());
-
-            // support for downgrades - at some point this should be removed
-            var legacyMarkings = appearance.Markings
-                .SelectMany(organ => organ.Value.Values)
-                .SelectMany(i => i)
-                .Select(marking => marking.ToString())
-                .ToList();
-            var flattenedMarkings = appearance.Markings.SelectMany(it => it.Value)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-            var hairMarking = flattenedMarkings.FirstOrNull(kvp => kvp.Key == HumanoidVisualLayers.Hair)?.Value.FirstOrDefault();
-            var facialHairMarking = flattenedMarkings.FirstOrNull(kvp => kvp.Key == HumanoidVisualLayers.FacialHair)?.Value.FirstOrDefault();
-            profile.Markings =
-                JsonSerializer.SerializeToDocument(legacyMarkings.Select(marking => marking.ToString()).ToList());
-            profile.HairName = hairMarking?.MarkingId ?? HairStyles.DefaultHairStyle;
-            profile.FacialHairName = facialHairMarking?.MarkingId ?? HairStyles.DefaultFacialHairStyle;
-            profile.HairColor = (hairMarking?.MarkingColors[0] ?? Color.Black).ToHex();
-            profile.FacialHairColor = (facialHairMarking?.MarkingColors[0] ?? Color.Black).ToHex();
-
+            profile.Markings = markings;
             profile.Slot = slot;
             profile.PreferenceUnavailable = (DbPreferenceUnavailableMode) humanoid.PreferenceUnavailable;
 

@@ -43,6 +43,12 @@ public sealed partial class CharacterPickerButton : ContainerButton
 
         if (profile is HumanoidCharacterProfile humanoid)
         {
+            _previewDummy = entityManager.SpawnEntity(prototypeManager.Index<SpeciesPrototype>(SharedHumanoidAppearanceSystem.DefaultSpecies).DollPrototype, MapCoordinates.Nullspace);
+        }
+        else
+        {
+            _previewDummy = UserInterfaceManager.GetUIController<LobbyUIController>()
+                .LoadProfileEntity(humanoid, null, true);
 
             var highPriorityJob = humanoid.JobPriorities.SingleOrDefault(p => p.Value == JobPriority.High).Key;
             if (highPriorityJob != default)
