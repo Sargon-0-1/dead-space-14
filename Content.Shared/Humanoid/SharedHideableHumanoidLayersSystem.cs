@@ -11,12 +11,12 @@ public abstract partial class SharedHideableHumanoidLayersSystem : EntitySystem
     /// </summary>
     /// <param name="ent">Humanoid entity</param>
     /// <param name="layer">Layer to toggle visibility for</param>
-    /// <param name="hidden">Whether to hide (true) or show (false) the layer. If more than once piece of clothing is hiding the layer, it may remain hidden.</param>
+    /// <param name="visible">Whether to hide or show the layer. If more than once piece of clothing is hiding the layer, it may remain hidden.</param>
     /// <param name="slot">Equipment slot that has the clothing that is (or was) hiding the layer.</param>
-    public virtual void SetLayerOcclusion(
+    public virtual void SetLayerVisibility(
         Entity<HideableHumanoidLayersComponent?> ent,
         HumanoidVisualLayers layer,
-        bool hidden,
+        bool visible,
         SlotFlags slot)
     {
         if (!Resolve(ent, ref ent.Comp))
@@ -30,7 +30,7 @@ public abstract partial class SharedHideableHumanoidLayersSystem : EntitySystem
 #endif
 
         var dirty = false;
-        if (hidden)
+        if (visible)
         {
             var oldSlots = ent.Comp.HiddenLayers.GetValueOrDefault(layer);
             ent.Comp.HiddenLayers[layer] = slot | oldSlots;
@@ -52,7 +52,7 @@ public abstract partial class SharedHideableHumanoidLayersSystem : EntitySystem
 
         Dirty(ent);
 
-        var evt = new HumanoidLayerVisibilityChangedEvent(layer, ent.Comp.HiddenLayers.ContainsKey(layer));
+        var evt = new HumanoidLayerVisibilityChangedEvent(layer, visible);
         RaiseLocalEvent(ent, ref evt);
     }
 }

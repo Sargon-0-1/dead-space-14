@@ -130,11 +130,6 @@
 - type: entity
   parent: [ OrganBaseHeadSexed, OrganBaseHead, OrganHumanExternal ]
   id: OrganHumanHead
-  components:
-  - type: VisualOrganMarkings
-    hideableLayers:
-    - enum.HumanoidVisualLayers.Hair
-    - enum.HumanoidVisualLayers.Snout
 
 - type: entity
   parent: [ OrganBaseArmLeft, OrganHumanExternal ]
