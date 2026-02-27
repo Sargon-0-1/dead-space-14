@@ -47,6 +47,16 @@ namespace Content.Client.Lobby.UI
         public event Action? Save;
 
         /// <summary>
+        /// Entity used for the profile editor preview
+        /// </summary>
+        public EntityUid PreviewDummy;
+
+        /// <summary>
+        /// Temporary override of their selected job, used to preview roles.
+        /// </summary>
+        public JobPrototype? JobOverride;
+
+        /// <summary>
         /// The character slot for the current profile.
         /// </summary>
         public int? CharacterSlot;
@@ -337,10 +347,15 @@ namespace Content.Client.Lobby.UI
         /// </remarks>
         private void ReloadPreview()
         {
-            if (Profile == null)
+            _entManager.DeleteEntity(PreviewDummy);
+            PreviewDummy = EntityUid.Invalid;
+
+            if (Profile == null || !_prototypeManager.HasIndex(Profile.Species))
                 return;
 
-            SpriteView.LoadPreview(Profile, JobOverride, ShowClothes.Pressed);
+            PreviewDummy = _controller.LoadProfileEntity(Profile, JobOverride, ShowClothes.Pressed);
+            SpriteView.SetEntity(PreviewDummy);
+            _entManager.System<MetaDataSystem>().SetEntityName(PreviewDummy, Profile.Name);
 
             // Check and set the dirty flag to enable the save/reset buttons as appropriate.
             SetDirty();
@@ -391,15 +406,16 @@ namespace Content.Client.Lobby.UI
             }
         }
 
+
         /// <summary>
         /// A slim reload that only updates the entity itself and not any of the job entities, etc.
         /// </summary>
         private void ReloadProfilePreview()
         {
-            if (Profile == null)
+            if (Profile == null || !_entManager.EntityExists(PreviewDummy))
                 return;
 
-            SpriteView.ReloadProfilePreview(Profile);
+            _entManager.System<SharedVisualBodySystem>().ApplyProfileTo(PreviewDummy, Profile);
 
             // Check and set the dirty flag to enable the save/reset buttons as appropriate.
             SetDirty();
@@ -421,6 +437,255 @@ namespace Content.Client.Lobby.UI
             ReloadPreview();
         }
 
+        protected override void ExitedTree()
+        {
+            base.ExitedTree();
+            _entManager.DeleteEntity(PreviewDummy);
+            PreviewDummy = EntityUid.Invalid;
+        }
+
+        private void SetAge(int newAge)
+        {
+            Profile = Profile?.WithAge(newAge);
+            ReloadPreview();
+        }
+
+        private void SetSex(Sex newSex)
+        {
+            Profile = Profile?.WithSex(newSex);
+            // for convenience, default to most common gender when new sex is selected
+            switch (newSex)
+            {
+                case Sex.Male:
+                    Profile = Profile?.WithGender(Gender.Male);
+                    break;
+                case Sex.Female:
+                    Profile = Profile?.WithGender(Gender.Female);
+                    break;
+                default:
+                    Profile = Profile?.WithGender(Gender.Epicene);
+                    break;
+            }
+
+            UpdateGenderControls();
+            _markingsModel.SetOrganSexes(newSex);
+            ReloadPreview();
+        }
+
+        private void SetGender(Gender newGender)
+        {
+            Profile = Profile?.WithGender(newGender);
+            ReloadPreview();
+        }
+
+        private void SetSpecies(string newSpecies)
+        {
+            Profile = Profile?.WithSpecies(newSpecies);
+            OnSkinColorOnValueChanged(); // Species may have special color prefs, make sure to update it.
+            _markingsModel.OrganData = _markingManager.GetMarkingData(newSpecies);
+            _markingsModel.ValidateMarkings();
+            // In case there's job restrictions for the species
+            RefreshJobs();
+            // In case there's species restrictions for loadouts
+            RefreshLoadouts();
+            UpdateSexControls(); // update sex for new species
+            UpdateSpeciesGuidebookIcon();
+            ReloadPreview();
+        }
+
+        private void SetName(string newName)
+        {
+            Profile = Profile?.WithName(newName);
+            SetDirty();
+
+            if (!IsDirty)
+                return;
+
+            _entManager.System<MetaDataSystem>().SetEntityName(PreviewDummy, newName);
+        }
+
+        private void SetSpawnPriority(SpawnPriorityPreference newSpawnPriority)
+        {
+            Profile = Profile?.WithSpawnPriorityPreference(newSpawnPriority);
+            SetDirty();
+        }
+
+        public bool IsDirty
+        {
+            get => _isDirty;
+            set
+            {
+                if (_isDirty == value)
+                    return;
+
+                _isDirty = value;
+                UpdateSaveButton();
+            }
+        }
+
+        private void UpdateNameEdit()
+        {
+            NameEdit.Text = Profile?.Name ?? "";
+        }
+
+        private void UpdateFlavorTextEdit()
+        {
+            if (_flavorTextEdit != null)
+            {
+                _flavorTextEdit.TextRope = new Rope.Leaf(Profile?.FlavorText ?? "");
+            }
+        }
+
+        private void UpdateAgeEdit()
+        {
+            AgeEdit.Text = Profile?.Age.ToString() ?? "";
+        }
+
+        /// <summary>
+        /// Updates selected job priorities to the profile's.
+        /// </summary>
+        private void UpdateJobPriorities()
+        {
+            foreach (var (jobId, prioritySelector) in _jobPriorities)
+            {
+                var priority = Profile?.JobPriorities.GetValueOrDefault(jobId, JobPriority.Never) ?? JobPriority.Never;
+                prioritySelector.Select((int) priority);
+            }
+        }
+
+        private void UpdateSexControls()
+        {
+            if (Profile == null)
+                return;
+
+            SexButton.Clear();
+
+            var sexes = new List<Sex>();
+
+            // add species sex options, default to just none if we are in bizzaro world and have no species
+            if (_prototypeManager.Resolve<SpeciesPrototype>(Profile.Species, out var speciesProto))
+            {
+                foreach (var sex in speciesProto.Sexes)
+                {
+                    sexes.Add(sex);
+                }
+            }
+            else
+            {
+                sexes.Add(Sex.Unsexed);
+            }
+
+            // add button for each sex
+            foreach (var sex in sexes)
+            {
+                SexButton.AddItem(Loc.GetString($"humanoid-profile-editor-sex-{sex.ToString().ToLower()}-text"), (int) sex);
+            }
+
+            if (sexes.Contains(Profile.Sex))
+                SexButton.SelectId((int) Profile.Sex);
+            else
+                SexButton.SelectId((int) sexes[0]);
+        }
+
+        private void UpdateSkinColor()
+        {
+            if (Profile == null)
+                return;
+
+            var skin = _prototypeManager.Index<SpeciesPrototype>(Profile.Species).SkinColoration;
+            var strategy = _prototypeManager.Index(skin).Strategy;
+
+            switch (strategy.InputType)
+            {
+                case SkinColorationStrategyInput.Unary:
+                {
+                    if (!Skin.Visible)
+                    {
+                        Skin.Visible = true;
+                        RgbSkinColorContainer.Visible = false;
+                    }
+
+                    Skin.Value = strategy.ToUnary(Profile.Appearance.SkinColor);
+
+                    break;
+                }
+                case SkinColorationStrategyInput.Color:
+                {
+                    if (!RgbSkinColorContainer.Visible)
+                    {
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
+                    }
+
+                    _rgbSkinColorSelector.Color = strategy.ClosestSkinColor(Profile.Appearance.SkinColor);
+
+                    break;
+                }
+            }
+        }
+
+        public void UpdateSpeciesGuidebookIcon()
+        {
+            SpeciesInfoButton.StyleClasses.Clear();
+
+            var species = Profile?.Species;
+            if (species is null)
+                return;
+
+            if (!_prototypeManager.Resolve<SpeciesPrototype>(species, out var speciesProto))
+                return;
+
+            // Don't display the info button if no guide entry is found
+            if (!_prototypeManager.HasIndex<GuideEntryPrototype>(species))
+                return;
+
+            const string style = "SpeciesInfoDefault";
+            SpeciesInfoButton.StyleIdentifier = style;
+        }
+
+        private void UpdateMarkings()
+        {
+            if (Profile == null)
+            {
+                return;
+            }
+
+            _markingsModel.OrganData = _markingManager.GetMarkingData(Profile.Species);
+            _markingsModel.OrganProfileData = _markingManager.GetProfileData(Profile.Species, Profile.Sex, Profile.Appearance.SkinColor, Profile.Appearance.EyeColor);
+            _markingsModel.Markings = Profile.Appearance.Markings;
+        }
+
+        private void UpdateGenderControls()
+        {
+            if (Profile == null)
+            {
+                return;
+            }
+
+            PronounsButton.SelectId((int) Profile.Gender);
+        }
+
+        private void UpdateSpawnPriorityControls()
+        {
+            if (Profile == null)
+            {
+                return;
+            }
+
+            SpawnPriorityButton.SelectId((int) Profile.SpawnPriority);
+        }
+
+        private void UpdateEyePickers()
+        {
+            if (Profile == null)
+            {
+                return;
+            }
+
+            _markingsModel.SetOrganEyeColor(Profile.Appearance.EyeColor);
+            EyeColorPicker.SetData(Profile.Appearance.EyeColor);
+        }
+
         private void UpdateSaveButton()
         {
             SaveButton.Disabled = Profile is null || !IsDirty;
@@ -429,7 +694,112 @@ namespace Content.Client.Lobby.UI
 
         private void SetPreviewRotation(Direction direction)
         {
-            SpriteView.OverrideDirection = (Direction)((int)direction % 4 * 2);
+            SpriteView.OverrideDirection = (Direction) ((int) direction % 4 * 2);
+        }
+
+        private void RandomizeEverything()
+        {
+            Profile = HumanoidCharacterProfile.Random();
+            SetProfile(Profile, CharacterSlot);
+            SetDirty();
+        }
+
+        private void RandomizeName()
+        {
+            if (Profile == null) return;
+            var name = HumanoidCharacterProfile.GetName(Profile.Species, Profile.Gender);
+            SetName(name);
+            UpdateNameEdit();
+        }
+
+        private async void ExportImage()
+        {
+            if (_imaging)
+                return;
+
+            var dir = SpriteView.OverrideDirection ?? Direction.South;
+
+            // I tried disabling the button but it looks sorta goofy as it only takes a frame or two to save
+            _imaging = true;
+            await _entManager.System<ContentSpriteSystem>().Export(PreviewDummy, dir, includeId: false);
+            _imaging = false;
+        }
+
+        private async void ImportProfile()
+        {
+            if (_exporting || CharacterSlot == null || Profile == null)
+                return;
+
+            StartExport();
+            await using var file = await _dialogManager.OpenFile(new FileDialogFilters(new FileDialogFilters.Group("yml")), FileAccess.Read);
+
+            if (file == null)
+            {
+                EndExport();
+                return;
+            }
+
+            try
+            {
+                var profile = HumanoidCharacterProfile.FromStream(file, _playerManager.LocalSession!);
+                var oldProfile = Profile;
+                SetProfile(profile, CharacterSlot);
+
+                IsDirty = !profile.MemberwiseEquals(oldProfile);
+            }
+            catch (Exception exc)
+            {
+                _sawmill.Error($"Error when importing profile\n{exc.StackTrace}");
+            }
+            finally
+            {
+                EndExport();
+            }
+        }
+
+        private async void ExportProfile()
+        {
+            if (Profile == null || _exporting)
+                return;
+
+            StartExport();
+            var file = await _dialogManager.SaveFile(new FileDialogFilters(new FileDialogFilters.Group("yml")));
+
+            if (file == null)
+            {
+                EndExport();
+                return;
+            }
+
+            try
+            {
+                var dataNode = Profile.ToDataNode();
+                await using var writer = new StreamWriter(file.Value.fileStream);
+                dataNode.Write(writer);
+            }
+            catch (Exception exc)
+            {
+                _sawmill.Error($"Error when exporting profile\n{exc.StackTrace}");
+            }
+            finally
+            {
+                EndExport();
+                await file.Value.fileStream.DisposeAsync();
+            }
+        }
+
+        private void StartExport()
+        {
+            _exporting = true;
+            ImportButton.Disabled = true;
+            ExportButton.Disabled = true;
+        }
+
+        private void EndExport()
+        {
+            _exporting = false;
+            ImportButton.Disabled = false;
+            ExportButton.Disabled = false;
         }
     }
 }
