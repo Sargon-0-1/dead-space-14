@@ -89,6 +89,9 @@
   - FloorTileItemOldConcrete
   - FloorTileItemOldConcreteMono
   - FloorTileItemOldConcreteSmooth
+  - FloorTileItemIronsandConcrete
+  - FloorTileItemIronsandConcreteMono
+  - FloorTileItemIronsandConcreteSmooth
 
 - type: latheRecipePack
   id: CircuitFloorsStatic
@@ -118,6 +121,8 @@
   - FauxTileAstroAsteroidSand
   - FauxTileDesertAstroSand
   - FauxTileFairyAstroGrass # DS14
+  - FauxTileAstroIronsand
+  - FauxTileAstroIronsandBorderless
 
 # DS14-start
 - type: latheRecipePack

@@ -480,6 +480,11 @@ public enum LogType
     /// </summary>
     Instrument = 103,
 
+    /// <summary>
+    /// Events related to players connecting/disconnecting.
+    /// </summary>
+    Connection = 104,
+
     //backmen
     Transactions = 120,
 }

@@ -121,7 +121,6 @@
       - BorgChassis
       - RoboticsConsole
   - type: WiresPanel
-    openingTool: Prying
   - type: ActivatableUIRequiresPanel
   - type: NameIdentifier
     group: Silicon
@@ -281,6 +280,12 @@
   - type: LightningTarget # DS14
     priority: 2
     lightningExplode: false
+  - type: BypassLock
+    openWiresPanel: true
+  - type: BypassLockRequiresMobState
+    requiredMobState:
+    - Critical
+    - Dead
 
 - type: entity
   abstract: true
@@ -331,6 +336,7 @@
     networkSet: true
     nameSet: True
     id: Xenoborg
+    useEntityNameAsCameraId: true
   - type: Explosive
     explosionType: Minibomb
     deleteAfterExplosion: false # let damage threshold gib the borg
@@ -359,6 +365,7 @@
   - type: AccessReader
     access: [["Command"], ["Research"]]
   - type: ShowJobIcons
+  - type: ShowCrewIcons
   - type: InteractionPopup
     interactSuccessSound:
       path: /Audio/Ambience/Objects/periodic_beep.ogg
@@ -401,6 +408,8 @@
     color: "#dd200b"
   - type: Damageable
     damageModifierSet: CombatBorg # DS14
+  - type: BypassLock
+    bypassDelay: 15
 
 - type: entity
   id: BaseBorgChassisDerelict
@@ -421,6 +430,7 @@
   - type: IonStormTarget
     chance: 1
   - type: ShowJobIcons
+  - type: ShowCrewIcons
 
 - type: entity
   id: BaseBorgChassisSyndicateDerelict #For assault borg and maybe others in time
@@ -434,6 +444,7 @@
   - type: IonStormTarget
     chance: 1
   - type: ShowJobIcons
+  - type: ShowCrewIcons
   - type: NpcFactionMember # They're still syndicate even if they can't listen to the radio or see icons
     factions:
     - Syndicate
@@ -461,6 +472,8 @@
     color: "#dd200b"
   - type: Damageable # DS14
     damageModifierSet: CombatBorg
+  - type: BypassLock
+    bypassDelay: 15
 
 - type: entity
   parent: BaseBorgChassisNotIonStormable
@@ -549,6 +562,11 @@
       - !type:PlaySoundBehavior
         sound:
           collection: MetalBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          PinpointerMothershipPiece: # drop a piece of core pinpointer upon being destructed (4 pieces to make a core pinpointer)
+            min: 1
+            max: 1
       - !type:EmptyContainersBehaviour
         containers:
         - borg_brain
@@ -571,8 +589,12 @@
   - type: AccessReader
     access: [["Xenoborg"]]
   - type: ShowJobIcons # not sure if it is needed
+  - type: ShowCrewIcons
   - type: InteractionPopup
     interactSuccessSound:
       path: /Audio/Ambience/Objects/periodic_beep.ogg
   - type: Damageable # DS14
     damageModifierSet: CombatBorg
+  - type: Xenoborg
+  - type: BypassLock
+    bypassDelay: 15

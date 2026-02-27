@@ -82,6 +82,7 @@
           False: {visible: false}
   - type: StatusIcon
     bounds: -0.5,-0.5,0.5,0.5
+  - type: JobStatus
   - type: RotationVisuals
     defaultRotation: 90
     horizontalRotation: 90
@@ -169,7 +170,7 @@
   - type: Crawler
   - type: Dna
   - type: MindContainer
-    showExamineInfo: true
+  - type: MindExaminable
   - type: CanEnterCryostorage
   - type: InteractionPopup
     successChance: 1

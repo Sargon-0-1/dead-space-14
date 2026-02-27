@@ -34,8 +34,6 @@
   id: BaseXenoOrgan
   parent: BaseXenoOrganUnGibbable
   abstract: true
-  components:
-  - type: Gibbable
 
 - type: entity
   id: OrganXenoBrain

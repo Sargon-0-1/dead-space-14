@@ -217,7 +217,7 @@ public sealed class BlobCoreSystem : SharedBlobCoreSystem
             {
                 if (blobRuleComp.Stage == BlobStage.Critical ||
                     blobRuleComp.Stage == BlobStage.Begin)
-                    _roundEndSystem.CancelRoundEndCountdown(null, false);
+                    _roundEndSystem.CancelRoundEndCountdown(forceRecall: true);
             }
         }
 

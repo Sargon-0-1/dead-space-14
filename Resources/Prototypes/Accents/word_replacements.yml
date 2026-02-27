@@ -770,6 +770,7 @@
     deadspace-chatsan-word-166: deadspace-chatsan-replacement-166
     deadspace-chatsan-word-167: deadspace-chatsan-replacement-167
     # DS14-chatsan-end
+    chatsan-word-69: chatsan-replacement-69 # :godo:
 
 - type: accent
   id: liar

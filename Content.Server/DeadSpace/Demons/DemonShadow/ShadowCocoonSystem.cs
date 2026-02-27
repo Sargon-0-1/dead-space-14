@@ -7,6 +7,7 @@ using Robust.Shared.Timing;
 using Content.Shared.Destructible;
 using Content.Server.DeadSpace.Abilities.Cocoon.Components;
 using Content.Shared.Body.Events;
+using Content.Shared.Gibbing;
 
 namespace Content.Server.DeadSpace.Demons.LockCocoon;
 

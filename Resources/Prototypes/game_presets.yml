@@ -8,12 +8,12 @@
   voteType: rdm # DS14
   description: survival-description
   rules:
-  - WageScheduler # backmen: currency
-  - MeteorSwarmScheduler
-  - RampingStationEventScheduler
-  - SpaceTrafficControlEventScheduler
-  - SpaceTrafficControlFriendlyEventScheduler
-  - BasicRoundstartVariation
+    - WageScheduler # backmen: currency
+    - MeteorSwarmScheduler
+    - RampingStationEventScheduler
+    - SpaceTrafficControlEventScheduler
+    - SpaceTrafficControlFriendlyEventScheduler
+    - BasicRoundstartVariation
 
 - type: gamePreset
   id: KesslerSyndrome
@@ -68,20 +68,20 @@
   description: aller-at-once-description
   showInVote: false
   rules:
-  - Nukeops
-  - Traitor
-  - Revolutionary
-  - Zombie
-  - Wizard
-  - Xenoborgs
-  - BasicStationEventScheduler
-  - KesslerSyndromeScheduler
-  - MeteorSwarmMildScheduler
-  - MeteorSwarmScheduler
-  - RampingStationEventScheduler
-  - SpaceTrafficControlEventScheduler
-  - SpaceTrafficControlFriendlyEventScheduler
-  - BasicRoundstartVariation
+    - Nukeops
+    - Traitor
+    - Revolutionary
+    - Zombie
+    - Wizard
+    - Xenoborgs
+    - BasicStationEventScheduler
+    - KesslerSyndromeScheduler
+    - MeteorSwarmMildScheduler
+    - MeteorSwarmScheduler
+    - RampingStationEventScheduler
+    - SpaceTrafficControlEventScheduler
+    - SpaceTrafficControlFriendlyEventScheduler
+    - BasicRoundstartVariation
 
 - type: gamePreset
   id: Xenoborgs
@@ -126,9 +126,9 @@
   voteType: admin # DS14
   description: greenshift-description
   rules:
-  - WageScheduler # backmen: currency
-  - SpaceTrafficControlFriendlyEventScheduler
-  - BasicRoundstartVariation
+    - WageScheduler # backmen: currency
+    - SpaceTrafficControlFriendlyEventScheduler
+    - BasicRoundstartVariation
 
 - type: gamePreset
   id: Dynamic
