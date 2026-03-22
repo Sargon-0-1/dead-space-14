@@ -42,7 +42,7 @@
       - !type:HealthChange
         conditions:
           - !type:MetabolizerTypeCondition
-            type: Xenomorph
+            type: [ Xenomorph ]
         damage:
           groups:
             Brute: -0.50
@@ -153,7 +153,7 @@
   name: reagent-name-sulfur-blood
   group: Biological
   desc: reagent-desc-sulfur-blood
-  flavor: acidic
+  flavor: acid
   color: "#b89e00"
   recognizable: true
   physicalDesc: reagent-physical-desc-acrid

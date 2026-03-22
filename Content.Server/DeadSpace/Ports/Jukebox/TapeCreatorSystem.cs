@@ -23,7 +23,7 @@ public sealed class TapeCreatorSystem : EntitySystem
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly TagSystem _tag = default!;
 
-    private static readonly ProtoId<TagPrototype> TapeRecorderCoinTag = "TapeRecorderrCoin";
+    private static readonly ProtoId<TagPrototype> TapeRecorderCoinTag = "TapeRecorderCoin";
     private const string TapeCreatorContainerName = "tape_creator_container";
 
     public override void Initialize()

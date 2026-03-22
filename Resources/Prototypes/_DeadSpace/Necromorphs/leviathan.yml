@@ -254,7 +254,7 @@
         shape:
           !type:PhysShapeAabb
           bounds: "-0.45,-0.45,0.45,0.45"
-        mass: 60
+        density: 60
         mask:
           - MobMask
         layer:
@@ -305,8 +305,6 @@
       Extinguish: [ Touch ]
       Acidic: [Touch, Ingestion]
   - type: Bloodstream
-    bloodReagent: NecromorfBlood
-    bloodMaxVolume: 500
     bloodlossThreshold: 0.2
     bloodlossDamage:
       types:
