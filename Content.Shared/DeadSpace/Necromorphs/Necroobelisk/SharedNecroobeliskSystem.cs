@@ -1,8 +1,6 @@
 // Мёртвый Космос, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/dead-space-server/space-station-14-fobos/master/LICENSE.TXT
 
 using Robust.Shared.Timing;
-using Robust.Shared.Audio;
-using Robust.Shared.Audio.Systems;
 using Content.Shared.DeadSpace.Necromorphs.Sanity;
 using Content.Shared.Mobs.Components;
 
@@ -11,13 +9,12 @@ namespace Content.Shared.DeadSpace.Necromorphs.Necroobelisk;
 public abstract class SharedNecroobeliskSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SharedSanitySystem _sharedSanity = default!;
 
-    private bool _isSanityCheckExecuted = false;
+    private bool _isSanityCheckExecuted;
 
     public override void Initialize()
     {
