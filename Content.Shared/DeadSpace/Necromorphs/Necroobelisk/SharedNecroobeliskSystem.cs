@@ -79,8 +79,6 @@ public abstract class SharedNecroobeliskSystem : EntitySystem
         if (!component.IsActive)
             return;
 
-        _audio.PlayPvs(component.Sound, uid, AudioParams.Default.WithVariation(1f).WithVolume(15f));
-
         var ev = new NecroobeliskPulseEvent();
         RaiseLocalEvent(uid, ref ev);
     }
