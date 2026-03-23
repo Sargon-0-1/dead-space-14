@@ -266,6 +266,7 @@
     - prefRoles: [ Traitor ]
       mindRoles:
       - MindRoleTraitorReinforcement
+      sponsorsPriority: true
       components:
       - type: Skill
         group: ALL
@@ -312,6 +313,7 @@
             requireInputValidation: false
       mindRoles:
       - MindRoleChangeling
+      sponsorsPriority: true
   - type: AntagObjectives
     objectives:
     - ChangelingSurviveObjective
@@ -344,6 +346,7 @@
         group: ALL
       mindRoles:
       - MindRoleHeadRevolutionary
+      sponsorsPriority: true
   - type: DynamicRuleCost
     cost: 200
 
@@ -411,6 +414,7 @@
         nameFormat: name-format-wizard
       mindRoles:
       - MindRoleWizard
+      sponsorsPriority: true
   - type: DynamicRuleCost
     cost: 150
 
@@ -447,6 +451,7 @@
         group: ALL
       mindRoles:
       - MindRoleInitialInfected
+      sponsorsPriority: true
   - type: DynamicRuleCost
     cost: 200
 

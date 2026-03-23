@@ -1048,7 +1048,6 @@ public sealed class DonateShopWindow : EmeraldDefaultWindow
         _isPurchasing = true;
         ShowPurchaseProcessing();
         _entManager.EntityNetManager.SendSystemNetworkMessage(new RequestPurchaseEnergyItem(itemId, period));
-        RequestInventoryData();
     }
 
     private void OnClaimRewardRequest(int rewardId, bool isPremium)
@@ -1058,7 +1057,6 @@ public sealed class DonateShopWindow : EmeraldDefaultWindow
 
         _isClaimingReward = true;
         _entManager.EntityNetManager.SendSystemNetworkMessage(new RequestClaimCalendarReward(rewardId, isPremium));
-        RequestInventoryData();
     }
 
     private void OpenLootboxOpener(string name, int userItemId, bool stelsHidden)

@@ -1,5 +1,6 @@
 // Мёртвый Космос, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/dead-space-server/space-station-14-fobos/master/LICENSE.TXT
 
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Content.DeadSpace.Interfaces.Server;
@@ -32,10 +33,10 @@ public sealed class DonateShopSystem : EntitySystem
     private const bool Testing = false;
     private const string TestUserId = "";
 
-    private readonly Dictionary<string, DonateShopState> _playerCache = new();
-    private readonly Dictionary<string, InventoryState> _inventoryCache = new();
-    private readonly Dictionary<string, HashSet<string>> _spawnedItems = new();
-    private readonly Dictionary<string, DateTime> _playerEntryTimes = new();
+    private readonly ConcurrentDictionary<string, DonateShopState> _playerCache = new();
+    private readonly ConcurrentDictionary<string, InventoryState> _inventoryCache = new();
+    private readonly ConcurrentDictionary<string, HashSet<string>> _spawnedItems = new();
+    private readonly ConcurrentDictionary<string, DateTime> _playerEntryTimes = new();
     private readonly List<PendingUptimeSession> _pendingSessions = new();
 
     private IDonateApiService? _donateApiService;
@@ -72,6 +73,18 @@ public sealed class DonateShopSystem : EntitySystem
         _sawmill.Info($"DonateShopSystem initialized, API service: {(_donateApiService != null ? "OK" : "NULL")}");
     }
 
+    private async void RunSafe(Task task)
+    {
+        try
+        {
+            await task;
+        }
+        catch (Exception e)
+        {
+            _sawmill.Error($"Donate async error: {e}");
+        }
+    }
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -90,7 +103,7 @@ public sealed class DonateShopSystem : EntitySystem
 
         foreach (var session in toRetry)
         {
-            _ = SendUptimeAsync(session.UserId, session.Entry, session.Exit);
+            RunSafe(SendUptimeAsync(session.UserId, session.Entry, session.Exit));
         }
     }
 
@@ -115,19 +128,19 @@ public sealed class DonateShopSystem : EntitySystem
         switch (e.NewStatus)
         {
             case SessionStatus.Connected:
-                _ = FetchAndCachePlayerDataAsync(visitorId);
+                RunSafe(FetchAndCachePlayerDataAsync(visitorId));
                 _playerEntryTimes[visitorId] = DateTime.UtcNow;
                 _sawmill.Info($"Player connected: {visitorId}");
                 break;
 
             case SessionStatus.Disconnected:
-                _playerCache.Remove(visitorId);
-                _inventoryCache.Remove(visitorId);
+                _playerCache.TryRemove(visitorId, out _);
+                _inventoryCache.TryRemove(visitorId, out _);
 
                 if (_playerEntryTimes.TryGetValue(visitorId, out var entryTime))
                 {
-                    _playerEntryTimes.Remove(visitorId);
-                    _ = SendUptimeAsync(visitorId, entryTime, DateTime.UtcNow);
+                    _playerEntryTimes.TryRemove(visitorId, out _);
+                    RunSafe(SendUptimeAsync(visitorId, entryTime, DateTime.UtcNow));
                     _sawmill.Info($"Player disconnected: {visitorId}, sending uptime");
                 }
                 break;
@@ -136,7 +149,7 @@ public sealed class DonateShopSystem : EntitySystem
 
     private void OnRequestUpdate(RequestUpdateDonateShop msg, EntitySessionEventArgs args)
     {
-        _ = HandleRequestUpdateAsync(args.SenderSession);
+        RunSafe(HandleRequestUpdateAsync(args.SenderSession));
     }
 
     private async Task HandleRequestUpdateAsync(ICommonSession session)
@@ -148,7 +161,7 @@ public sealed class DonateShopSystem : EntitySystem
 
     private void OnRequestInventory(RequestInventory msg, EntitySessionEventArgs args)
     {
-        _ = HandleRequestInventoryAsync(args.SenderSession);
+        RunSafe(HandleRequestInventoryAsync(args.SenderSession));
     }
 
     private async Task HandleRequestInventoryAsync(ICommonSession session)
@@ -160,7 +173,7 @@ public sealed class DonateShopSystem : EntitySystem
 
     private void OnRequestEnergyShop(RequestEnergyShopItems msg, EntitySessionEventArgs args)
     {
-        _ = HandleRequestEnergyShopAsync(msg.Page, args.SenderSession);
+        RunSafe(HandleRequestEnergyShopAsync(msg.Page, args.SenderSession));
     }
 
     private async Task HandleRequestEnergyShopAsync(int page, ICommonSession session)
@@ -171,26 +184,13 @@ public sealed class DonateShopSystem : EntitySystem
             return;
         }
 
-        if (page == 1 && _energyShopCache != null && _gameTiming.CurTime - _energyShopCacheTime < EnergyShopCacheDuration)
-        {
-            RaiseNetworkEvent(new UpdateEnergyShopState(_energyShopCache), session.Channel);
-            return;
-        }
-
         var state = await _donateApiService.FetchEnergyShopItemsAsync(page);
-
-        if (page == 1 && !state.HasError)
-        {
-            _energyShopCache = state;
-            _energyShopCacheTime = _gameTiming.CurTime;
-        }
-
         RaiseNetworkEvent(new UpdateEnergyShopState(state), session.Channel);
     }
 
     private void OnPurchaseEnergyItem(RequestPurchaseEnergyItem msg, EntitySessionEventArgs args)
     {
-        _ = HandlePurchaseAsync(msg.ItemId, msg.Period, args.SenderSession);
+        RunSafe(HandlePurchaseAsync(msg.ItemId, msg.Period, args.SenderSession));
     }
 
     private async Task HandlePurchaseAsync(int itemId, PurchasePeriod period, ICommonSession session)
@@ -223,7 +223,7 @@ public sealed class DonateShopSystem : EntitySystem
 
     private void OnRequestDailyCalendar(RequestDailyCalendar msg, EntitySessionEventArgs args)
     {
-        _ = HandleRequestCalendarAsync(args.SenderSession);
+        RunSafe(HandleRequestCalendarAsync(args.SenderSession));
     }
 
     private async Task HandleRequestCalendarAsync(ICommonSession session)
@@ -243,7 +243,7 @@ public sealed class DonateShopSystem : EntitySystem
 
     private void OnClaimCalendarReward(RequestClaimCalendarReward msg, EntitySessionEventArgs args)
     {
-        _ = HandleClaimRewardAsync(msg.RewardId, msg.IsPremium, args.SenderSession);
+        RunSafe(HandleClaimRewardAsync(msg.RewardId, msg.IsPremium, args.SenderSession));
     }
 
     private async Task HandleClaimRewardAsync(int rewardId, bool isPremium, ICommonSession session)
@@ -270,7 +270,7 @@ public sealed class DonateShopSystem : EntitySystem
 
     private void OnOpenLootbox(RequestOpenLootbox msg, EntitySessionEventArgs args)
     {
-        _ = HandleOpenLootboxAsync(msg.UserItemId, msg.StelsOpen, args.SenderSession);
+        RunSafe(HandleOpenLootboxAsync(msg.UserItemId, msg.StelsOpen, args.SenderSession));
     }
 
     private async Task HandleOpenLootboxAsync(int userItemId, bool stelsOpen, ICommonSession session)
@@ -423,15 +423,15 @@ public sealed class DonateShopSystem : EntitySystem
     private async Task SendUpdatedInventoryAsync(ICommonSession session)
     {
         var visitorId = session.UserId.ToString();
-        _inventoryCache.Remove(visitorId);
+        _inventoryCache.TryRemove(visitorId, out _);
         var state = await GetOrFetchInventoryAsync(visitorId);
         RaiseNetworkEvent(new UpdateInventoryState(state), session.Channel);
     }
 
     private void InvalidatePlayerCache(string visitorId)
     {
-        _playerCache.Remove(visitorId);
-        _inventoryCache.Remove(visitorId);
+        _playerCache.TryRemove(visitorId, out _);
+        _inventoryCache.TryRemove(visitorId, out _);
     }
 
     private void InvalidateShopCache()
@@ -443,8 +443,11 @@ public sealed class DonateShopSystem : EntitySystem
     {
         if (_donateApiService == null)
         {
-            _sawmill.Warning($"API service is null, queueing for retry: {visitorId}");
-            _pendingSessions.Add(new PendingUptimeSession(visitorId, entryTime, exitTime));
+            if (_pendingSessions.Count < 500)
+            {
+                _sawmill.Warning($"API service is null, queueing for retry: {visitorId}");
+                _pendingSessions.Add(new PendingUptimeSession(visitorId, entryTime, exitTime));
+            }
             return;
         }
 
@@ -463,8 +466,15 @@ public sealed class DonateShopSystem : EntitySystem
                 break;
 
             case UptimeResult.NeedsRetry:
-                _sawmill.Warning($"Uptime send failed, queueing for retry: {visitorId}, duration: {duration:F1} min");
-                _pendingSessions.Add(new PendingUptimeSession(visitorId, entryTime, exitTime));
+                if (_pendingSessions.Count < 500)
+                {
+                    _sawmill.Warning($"Uptime send failed, queueing for retry: {visitorId}, duration: {duration:F1} min");
+                    _pendingSessions.Add(new PendingUptimeSession(visitorId, entryTime, exitTime));
+                }
+                else
+                {
+                    _sawmill.Warning($"Uptime retry queue full, dropping: {visitorId}");
+                }
                 break;
         }
     }
