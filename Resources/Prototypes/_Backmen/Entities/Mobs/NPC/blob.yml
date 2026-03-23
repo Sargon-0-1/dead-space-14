@@ -5,6 +5,9 @@
   parent: MarkerBase
   categories: [ DoNotMap ]
   components:
+  - type: Transform
+    anchored: false
+  - type: MindContainer
   - type: BlobSpawner
   - type: GhostRole
     name: ghost-role-information-blob-name
