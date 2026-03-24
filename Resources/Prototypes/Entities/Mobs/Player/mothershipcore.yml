@@ -150,6 +150,38 @@
     - Mothership
     - Xenoborg
     - Binary
+  - type: TTS # DS14-TTS
+    voice: Glados
+  # DS14-Languages-start
+  - type: Language
+    selectedLanguage: GeneralLanguage
+    knownLanguages:
+    - GeneralLanguage
+    - ArachnidLanguage
+    - SlimeLanguage
+    - DionaLanguage
+    - MothLanguage
+    - ReptilianLanguage
+    - VoxLanguage
+    - DemonLanguage
+    - CatLanguage
+    - MachineLanguage
+    - PlafLanguage
+    - VulpkaninLanguage
+    - XenomorphLanguage
+    cantSpeakLanguages:
+    - ArachnidLanguage
+    - SlimeLanguage
+    - DionaLanguage
+    - MothLanguage
+    - ReptilianLanguage
+    - VoxLanguage
+    - DemonLanguage
+    - CatLanguage
+    - PlafLanguage
+    - VulpkaninLanguage
+    - XenomorphLanguage
+  # DS14-Languages-end
   - type: Xenoborg
     mindRole: MindRoleMothershipCore
     briefingText: mothership-welcome
