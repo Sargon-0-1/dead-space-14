@@ -6,6 +6,8 @@ using Content.Shared.Body.Events;
 using Content.Shared.Destructible;
 using Content.Shared.Eye;
 using Content.Shared.Ghost;
+using Content.Shared.Popups;
+using Content.Shared.Storage.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Timing;
@@ -19,6 +21,7 @@ public sealed class ShadowCocoonSystem : EntitySystem
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SharedPointLightSystem _pointLightSystem = default!;
+    [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
 
     public override void Initialize()
     {
@@ -28,6 +31,7 @@ public sealed class ShadowCocoonSystem : EntitySystem
         SubscribeLocalEvent<ShadowCocoonComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<ShadowCocoonComponent, ComponentShutdown>(OnShutDown);
         SubscribeLocalEvent<ShadowCocoonComponent, ComponentInit>(OnInit);
+        SubscribeLocalEvent<ShadowCocoonComponent, EntGotInsertedIntoContainerMessage>(OnInserted);
         SubscribeLocalEvent<ShadowCocoonComponent, DestructionEventArgs>(OnDestruction);
     }
 
@@ -75,6 +79,27 @@ public sealed class ShadowCocoonSystem : EntitySystem
         }
 
         component.NextTick = _gameTiming.CurTime + TimeSpan.FromSeconds(1);
+    }
+
+    /// <summary>
+    /// Данный метод удаляет сущность из контейнера, в который ее вставили.
+    /// Необходимо для удаления возможности перемещать теневые коконы в ящиках/шкафах.
+    /// </summary>
+    private void OnInserted(EntityUid uid, ShadowCocoonComponent component, EntGotInsertedIntoContainerMessage args)
+    {
+        if (!HasComp<EntityStorageComponent>(args.Container.Owner))
+            return;
+
+        // Откладываем удаление на следующий тик! Иначе может возникнуть проблема с флагами системы контейнеров
+        Timer.Spawn(0, () =>
+        {
+            _popupSystem.PopupEntity(
+                "Стены хранилища не могут удержать эту материю",
+                args.Container.Owner,
+                PopupType.MediumCaution
+            );
+            _containerSystem.Remove(uid, args.Container);
+        });
     }
 
     /// <summary>  
