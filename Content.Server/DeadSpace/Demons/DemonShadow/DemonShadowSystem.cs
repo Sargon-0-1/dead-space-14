@@ -127,7 +127,7 @@ public sealed class DemonShadowSystem : SharedDemonShadowSystem
             ? component.PassiveHealingMultiplier
             : 1f;
 
-        _damageable.TryChangeDamage(uid, component.PassiveHealing * multiplier, true, false, damageableComponent);
+        _damageable.TryChangeDamage(uid, component.PassiveHealing * multiplier, true, false);
     }
 
     public void ShadowCheck(EntityUid uid, DemonShadowComponent component)
