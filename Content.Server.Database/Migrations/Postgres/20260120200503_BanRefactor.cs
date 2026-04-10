@@ -14,6 +14,8 @@ namespace Content.Server.Database.Migrations.Postgres
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("SET LOCAL statement_timeout = 0;");
+
             migrationBuilder.CreateTable(
                 name: "ban",
                 columns: table => new
