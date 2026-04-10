@@ -125,7 +125,7 @@ public sealed class DemonShadowSystem : SharedDemonShadowSystem
             ? component.PassiveHealingMultiplier
             : 1f;
 
-        _damageable.TryChangeDamage(uid, component.PassiveHealing * multiplier, true, false, damageableComponent);
+        _damageable.TryChangeDamage(uid, component.PassiveHealing * multiplier, true, false);
     }
 
     public void ShadowCheck(EntityUid uid, DemonShadowComponent component)
@@ -401,6 +401,9 @@ public sealed class DemonShadowSystem : SharedDemonShadowSystem
                 continue;
 
             if (HasComp<GhostComponent>(ent))
+                continue;
+
+            if (HasComp<PdaComponent>(ent))
                 continue;
 
             if (TryComp<VisibilityComponent>(ent, out var layer) && layer.Layer != (int)VisibilityFlags.Normal)
