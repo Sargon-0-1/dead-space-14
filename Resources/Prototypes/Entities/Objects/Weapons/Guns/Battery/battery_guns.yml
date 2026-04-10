@@ -860,9 +860,7 @@
     startingCharge: 960 #DS14
   #DS14-start
   - type: BatterySelfRecharger
-    autoRecharge: true
     autoRechargeRate: 20
-    autoRechargePause: true
     autoRechargePauseTime: 5
   #DS14-end
 
